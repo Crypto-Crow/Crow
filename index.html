@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Mini App - Home & Riddle</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .top-image {
+            width: 100%;
+            height: 200px;
+            background-color: #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .token-count {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .glass-box {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .glass-box.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .glass-box img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .glass-box-content {
+            flex-grow: 1;
+        }
+        
+        .check-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            outline: none;
+        }
+        
+        .check-button:active {
+            background-color: #45a049;
+        }
+        
+        .input-code {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .green-tick {
+            color: #4CAF50;
+            font-size: 24px;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-item.active {
+            color: #007AFF;
+        }
+        
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        
+        .coming-soon {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="home-page" class="container">
+        <div class="top-image">
+            <!-- Placeholder for top PNG image -->
+        </div>
+
+        <div class="token-count">
+            Crow <span id="crowCount">0</span>
+        </div>
+
+        <div class="section-title">Video from our YouTube channel</div>
+        <div class="glass-box">
+            <img src="/api/placeholder/50/50" alt="Video 1">
+            <div class="glass-box-content">
+                <div>What Video</div>
+                <div>1000+ Crow</div>
+            </div>
+            <button class="check-button" onclick="checkVideo(this, 1)">Check</button>
+        </div>
+        <div class="glass-box">
+            <img src="/api/placeholder/50/50" alt="Video 2">
+            <div class="glass-box-content">
+                <div>What Video</div>
+                <div>1000+ Crow</div>
+            </div>
+            <button class="check-button" onclick="checkVideo(this, 2)">Check</button>
+        </div>
+
+        <div class="section-title">Following platforms</div>
+        <div class="glass-box">
+            <img src="/api/placeholder/50/50" alt="Telegram">
+            <div class="glass-box-content">
+                <div>Follow our channel</div>
+                <div>400+ Crow</div>
+            </div>
+            <button class="check-button" onclick="checkPlatform(this, 'telegram', 400, 4)">Check</button>
+        </div>
+        <div class="glass-box">
+            <img src="/api/placeholder/50/50" alt="X">
+            <div class="glass-box-content">
+                <div>Follow our X</div>
+                <div>450+ Crow</div>
+            </div>
+            <button class="check-button" onclick="checkPlatform(this, 'twitter', 450, 4)">Check</button>
+        </div>
+        <div class="glass-box">
+            <img src="/api/placeholder/50/50" alt="YouTube">
+            <div class="glass-box-content">
+                <div>Subscribe to our YouTube</div>
+                <div>600+ Crow</div>
+            </div>
+            <button class="check-button" onclick="checkPlatform(this, 'youtube', 600, 6)">Check</button>
+        </div>
+    </div>
+
+    <div id="riddle-page" class="container" style="display: none;">
+        <div class="glass-box disabled">
+            <div class="glass-box-content">
+                <div>Daily puzzle of the crow</div>
+                <div style="font-size: 12px;">Coming soon</div>
+            </div>
+        </div>
+        <div class="coming-soon">Coming soon</div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item" onclick="showPage('riddle')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <span>Riddle</span>
+        </div>
+        <div class="nav-item active" onclick="showPage('home')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span>Home</span>
+        </div>
+        <div class="nav-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span>Friend</span>
+        </div>
+    </nav>
+
+    <script>
+        let crowCount = parseInt(localStorage.getItem('crowCount')) || 0;
+        updateCrowCount(0);
+
+        function updateCrowCount(amount) {
+            crowCount += amount;
+            document.getElementById('crowCount').textContent = crowCount;
+            localStorage.setItem('crowCount', crowCount);
+        }
+
+        function checkVideo(button, videoNumber) {
+            const storageKey = `video${videoNumber}`;
+            const storedData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+
+            if (storedData.completed) {
+                button.textContent = '✓';
+                button.disabled = true;
+                return;
+            }
+
+            if (button.disabled && !storedData.timeLeft) return;
+
+            if (!storedData.timeLeft) {
+                button.disabled = true;
+                storedData.timeLeft = 600; // 10 minutes
+                window.open('https://www.youtube.com', '_blank');
+            }
+
+            const timerInterval = setInterval(() => {
+                storedData.timeLeft--;
+                button.textContent = formatTime(storedData.timeLeft);
+                localStorage.setItem(storageKey, JSON.stringify(storedData));
+
+                if (storedData.timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showCodeInput(button, videoNumber);
+                }
+            }, 1000);
+        }
+
+        function showCodeInput(button, videoNumber) {
+            const parent = button.parentElement;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Enter code';
+            input.className = 'input-code';
+
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Submit';
+            submitButton.className = 'check-button';
+            submitButton.onclick = () => verifyCode(input.value, videoNumber, parent);
+
+            parent.innerHTML = '';
+            parent.appendChild(input);
+            parent.appendChild(submitButton);
+        }
+
+        function verifyCode(code, videoNumber, parent) {
+            if (code === 'YouTube') {
+                updateCrowCount(1000);
+                parent.innerHTML = '<span class="green-tick">✓</span>';
+                localStorage.setItem(`video${videoNumber}`, JSON.stringify({
+                    completed: true
+                }));
+            } else {
+                alert('Incorrect code. No Crow awarded.');
+                parent.innerHTML = '<span style="color: red;">✗</span>';
+            }
+        }
+
+        function checkPlatform(button, platform, reward, minutes) {
+            const storageKey = `platform_${platform}`;
+            const storedData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+
+            if (storedData.completed) {
+                button.textContent = '✓';
+                button.disabled = true;
+                return;
+            }
+
+            if (button.disabled && !storedData.timeLeft) return;
+
+            if (!storedData.timeLeft) {
+                button.disabled = true;
+                storedData.timeLeft = minutes * 60;
+                let url;
+                switch (platform) {
+                    case 'telegram':
+                        url = 'https://t.me/';
+                        break;
+                    case 'twitter':
+                        url = 'https://twitter.com/';
+                        break;
+                    case 'youtube':
+                        url = 'https://www.youtube.com/';
+                        break;
+                }
+                window.open(url, '_blank');
+            }
+
+            const timerInterval = setInterval(() => {
+                storedData.timeLeft--;
+                button.textContent = formatTime(storedData.timeLeft);
+                localStorage.setItem(storageKey, JSON.stringify(storedData));
+
+                if (storedData.timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    updateCrowCount(reward);
+                    button.textContent = '✓';
+                    button.disabled = true;
+                    localStorage.setItem(storageKey, JSON.stringify({
+                        completed: true
+                    }));
+                }
+            }, 1000);
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+
+        function showPage(pageId) {
+            document.getElementById('home-page').style.display = pageId === 'home' ? 'block' : 'none';
+            document.getElementById('riddle-page').style.display = pageId === 'riddle' ? 'block' : 'none';
+
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        // Initialize buttons and timers on page load
+        document.querySelectorAll('.check-button').forEach(button => {
+            const videoMatch = button.getAttribute('onclick').match(/checkVideo\(this, (\d+)\)/);
+            const platformMatch = button.getAttribute('onclick').match(/checkPlatform\(this, '(\w+)', \d+, \d+\)/);
+
+            if (videoMatch) {
+                const videoNumber = videoMatch[1];
+                const storageKey = `video${videoNumber}`;
+                const storedData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+
+                if (storedData.completed) {
+                    button.textContent = '✓';
+                    button.disabled = true;
+                } else if (storedData.timeLeft) {
+                    checkVideo(button, videoNumber);
+                }
+            } else if (platformMatch) {
+                const platform = platformMatch[1];
+                const storageKey = `platform_${platform}`;
+                const storedData = JSON.parse(localStorage.getItem(storageKey) || '{}');
+
+                if (storedData.completed) {
+                    button.textContent = '✓';
+                    button.disabled = true;
+                } else if (storedData.timeLeft) {
+                    checkPlatform(button, platform, 0, 0); // Reward and minutes are irrelevant here as we're just resuming the timer
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
